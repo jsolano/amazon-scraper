@@ -10,8 +10,10 @@ exports.amazonSearchScraper = (amazonSearchURL) => new Promise(async (resolve, r
         await page.goto(amazonSearchURL);
         //scrap all result products
         
-        const { products, productScrapCount } = await page.$$eval('.s-card-container', allProducts => {
+        const { products, productScrapCount, timeScrapElapsed } = await page.$$eval('.s-card-container', allProducts => {
             const products = []
+            const startScrapTime = Date.now();
+
             let productScrapCount = 0;
             allProducts.forEach((product) => {
                 const title = product.querySelector('div.s-title-instructions-style h2 a span')?.innerText;
@@ -30,10 +32,12 @@ exports.amazonSearchScraper = (amazonSearchURL) => new Promise(async (resolve, r
                 productScrapCount +=  (typeof link === 'string') ? 0.2 : 0;
                 products.push({ title, price, rating, soonerDelivery, link });
             });
-            return { products, productScrapCount };
+            const endScrapTime = Date.now();
+            const timeScrapElapsed = endScrapTime - startScrapTime;
+            return { products, productScrapCount, timeScrapElapsed };
         })
         const scrapRate = `${Math.round((productScrapCount/products.length) * 100).toString()}%`;
-        resolve({ products, scrapRate });
+        resolve({ products, scrapRate, timeScrapElapsed });
     } catch (error) {
         reject(`Error while scraping: ${error}`);
     } finally {

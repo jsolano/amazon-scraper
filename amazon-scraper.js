@@ -14,13 +14,13 @@ const { analyzeProducts, printResults } = require('./util/utils');
             // collected data. As scrapping is very dynamic and depends on external webs site structure, we need 
             // to monitoring the results to determine effective ways to increase efficiency and quality.  
             console.log('Scraping Amazon search page...');
-            const { products, scrapRate } = await amazonSearchScraper(url);
+            const { products, scrapRate, timeScrapElapsed } = await amazonSearchScraper(url);
 
             console.log('Analyzing Product Data...');
-            const { cheapestProductURL, highestRatingProductURL, soonestArrivingProductURL } = analyzeProducts(products, url);
+            const productScores = analyzeProducts(products, url);
             
             console.log('Results:');
-            printResults(cheapestProductURL, highestRatingProductURL, soonestArrivingProductURL, scrapRate);
+            printResults(productScores, scrapRate, timeScrapElapsed);
         } else {
             console.log('An amazon search url (US or CAN) as an argument is required, using the following format --url=\'https://www.amazon.{com|ca}/s{searchString}\'');
         }

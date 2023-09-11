@@ -58,16 +58,17 @@ exports.analyzeProducts = (products, url) => {
     return ({ cheapestProductURL, highestRatingProductURL, soonestArrivingProductURL });
 }
 
-exports.printResults = (cheapestProductURL, highestRatingProductURL, soonestArrivingProductURL, scrapRate) => {
+exports.printResults = (productScores, scrapRate, timeScrapElapsed) => {
+    console.log(` `);
     console.log('*********************************************************************************************************');
     console.log(` `);
-    console.log(` Scraping Rate Quality: ${scrapRate}`);
+    console.log(` Scraping Rate Quality: ${scrapRate},  Total time taken: ${timeScrapElapsed} milliseconds`);  
     console.log(` `);
-    console.log(` Cheapest Product: ${cheapestProductURL}`);
+    console.log(` Cheapest Product: ${productScores.cheapestProductURL}`);
     console.log(` `);
-    console.log(` Highest Rating Product: ${highestRatingProductURL}`);
+    console.log(` Highest Rating Product: ${productScores.highestRatingProductURL}`);
     console.log(` `);
-    console.log(` Soonest Arriving Product: ${soonestArrivingProductURL}`);
+    console.log(` Soonest Arriving Product: ${productScores.soonestArrivingProductURL}`);
     console.log(` `);
     console.log('*********************************************************************************************************');
 }
