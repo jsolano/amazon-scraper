@@ -3,6 +3,8 @@
 const { firefox } = require('playwright');
 
 exports.amazonSearchScraper = (amazonSearchURL) => new Promise(async (resolve, reject) => {
+    if (!amazonSearchURL) reject('Error while scraping: amazonSearchURL is null');
+
     const browser = await firefox.launch();
     const context = await browser.newContext();
     const page = await context.newPage();

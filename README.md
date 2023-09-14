@@ -44,6 +44,14 @@ Results:
 *********************************************************************************************************
 ```
 
+## Run Tests
+
+```bash
+
+npx jest --verbose --runInBand --detectOpenHandles
+
+```
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)

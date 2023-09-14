@@ -4,21 +4,21 @@ const moment = require('moment');
 const URL = require('url').URL;
 
 exports.getPrice = (price) => {
-    if (!price) return;
+    if (!price || (typeof price !== 'string')) return;
     return Number(price.replace('$', ''));
 }
 
-const getAmazonProductLink = (hostName, path) => {
+exports.getAmazonProductLink = (hostName, path) => {
     if (!hostName || !path) return; 
     return `${hostName}${path}`;
 }
 
-const getDaysToDelivery = (soonestArriving) => {
+exports.getDaysToDelivery = (soonestArriving) => {
     if (!soonestArriving) return;
     const now = moment();
     const currentYear = now.year();
-    // Need to remove day from the scrapped text to create moment format 'MM DD, YYYY'
-    const deliveryDate = moment(`${soonestArriving.split(',')[1]}, ${currentYear}`, 'MM DD, YYYY');
+    // Need to remove day from the scrapped text to create moment format 'MMM DD, YYYY'
+    const deliveryDate = moment(`${soonestArriving.split(',')[1]}, ${currentYear}`, 'MMM DD, YYYY');
     return deliveryDate.diff(now, 'days');
 }
 
@@ -39,19 +39,19 @@ exports.analyzeProducts = (products, url) => {
         const productPrice = this.getPrice(product.price);
         if (productPrice < cheapestPrice) {
             cheapestPrice = productPrice;
-            cheapestProductURL = getAmazonProductLink(amazonSearchURL.hostname, product.link);
+            cheapestProductURL = this.getAmazonProductLink(amazonSearchURL.hostname, product.link);
         }
 
         const productRating = Number(product.rating);
         if (productRating > highestRating) {
             highestRating = productRating;
-            highestRatingProductURL = getAmazonProductLink(amazonSearchURL.hostname, product.link);
+            highestRatingProductURL = this.getAmazonProductLink(amazonSearchURL.hostname, product.link);
         }
 
-        const productSoonestArriving = getDaysToDelivery(product.soonerDelivery);
+        const productSoonestArriving = this.getDaysToDelivery(product.soonerDelivery);
         if (productSoonestArriving < soonestArriving) {
             soonestArriving = productSoonestArriving;
-            soonestArrivingProductURL = getAmazonProductLink(amazonSearchURL.hostname, product.link);
+            soonestArrivingProductURL = this.getAmazonProductLink(amazonSearchURL.hostname, product.link);
         }
     });
 
@@ -59,6 +59,8 @@ exports.analyzeProducts = (products, url) => {
 }
 
 exports.printResults = (productScores, scrapRate, timeScrapElapsed) => {
+    if (!productScores || !scrapRate || !timeScrapElapsed) return;
+
     console.log(` `);
     console.log('*********************************************************************************************************');
     console.log(` `);
@@ -71,4 +73,5 @@ exports.printResults = (productScores, scrapRate, timeScrapElapsed) => {
     console.log(` Soonest Arriving Product: ${productScores.soonestArrivingProductURL}`);
     console.log(` `);
     console.log('*********************************************************************************************************');
+    console.log(` `);
 }
