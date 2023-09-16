@@ -4,7 +4,11 @@ const { getPrice,
         getDaysToDelivery,
         printResults,
         analyzeProducts } = require('../../util/utils');
-const { products, productScores } = require('./data');       
+const { products, productScores } = require('./data');
+const moment = require('moment');
+const now = moment();
+const currentYear = now.year();
+const tomorrow = now.add(1, 'days').format("ddd, MMM DD");      
 
 describe('getPrice function', () => {
     test('Skip on null price param', () => {
@@ -43,7 +47,7 @@ describe('getDaysToDelivery function', () => {
     });
 
     test('Return a valid delivery day number', () => {
-        expect(getDaysToDelivery('Tomorrow, Sept 14')).toBeGreaterThanOrEqual(0);
+        expect(getDaysToDelivery(tomorrow)).toBeGreaterThanOrEqual(0);
     });
 });
 
